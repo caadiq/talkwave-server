@@ -2,10 +2,11 @@ package mcnc.talkwave.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import mcnc.talkwave.dto.ChatMessageDTO;
+import mcnc.talkwave.dto.ChatResponseDTO;
 import mcnc.talkwave.entity.Chat;
 import mcnc.talkwave.entity.ChatRoom;
 import mcnc.talkwave.service.ChatService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -39,22 +40,22 @@ public class ChatController {
 
     // 특정 채팅방의 채팅 내역 조회
     @GetMapping("/rooms/{roomId}/messages")
-    public ResponseEntity<List<Chat>> getChatMessages(@PathVariable Long roomId) {
-        List<Chat> chats = chatService.getChatMessages(roomId);
+    public ResponseEntity<Page<Chat>> getChatMessages(@PathVariable Long roomId, @RequestParam int page) {
+        Page<Chat> chats = chatService.getChatMessages(roomId, page);
         return ResponseEntity.ok(chats);
     }
 
     // 채팅 메시지 전송 (STOMP 사용)
     @MessageMapping("/message") // 클라이언트에서 보낼 경로
-    public void sendMessage(@Payload ChatMessageDTO chatMessageDTO) {
+    public void sendMessage(@Payload ChatResponseDTO chatMessageDTO) {
         // 메시지 저장
         log.info("chat received: {}", chatMessageDTO.toString());
-        chatService.saveChatMessage(chatMessageDTO);
+        ChatResponseDTO chatResponseDTO = chatService.saveChatMessage(chatMessageDTO);
 
         // 구독한 클라이언트에게 메시지 전송
         messagingTemplate.convertAndSend(
-                "/room/" + chatMessageDTO.getRoomId(),
-                chatMessageDTO
+                "/room/" + chatResponseDTO.getRoomId(),
+                chatResponseDTO
         );
     }
 }
