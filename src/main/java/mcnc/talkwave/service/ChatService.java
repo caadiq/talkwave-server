@@ -22,7 +22,8 @@ public class ChatService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRepository chatRepository;
-    private final UserRepository userRepository;
+    private final RoomCacheService roomCacheService;
+    private final UserCacheService userCacheService;
 
     // 채팅방 생성
     public ChatRoom createChatRoom(String name) {
@@ -38,19 +39,15 @@ public class ChatService {
     // 채팅 메시지 저장
     @Transactional
     public ChatResponseDTO saveChatMessage(ChatResponseDTO chatMessageDTO) {
-        ChatRoom room = chatRoomRepository.findById(chatMessageDTO.getRoomId())
-                .orElseThrow(() -> new IllegalArgumentException("ChatRoom not found"));
-        User sender = userRepository.findById(chatMessageDTO.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
+        ChatRoom room = roomCacheService.getRoomDetails(chatMessageDTO.getRoomId());
+        User sender = userCacheService.getUserDetails(chatMessageDTO.getUserId());
         Chat chat = Chat.createChat(room, sender, chatMessageDTO.getMessage());
         chatRepository.save(chat);
-        ChatResponseDTO.of(chat, room.getId(), sender);
+        return ChatResponseDTO.of(chat, room.getId(), sender);
     }
 
     // 특정 채팅방의 채팅 내역 조회
-    public Page<Chat> getChatMessages(Long roomId, int page) {
-        Pageable pageable = PageRequest.of(page, 10);
-        return chatRepository.findByRoomIdOrderBySendDateDesc(roomId, pageable);
+    public List<Chat> getChatMessages(Long roomId) {
+        return chatRepository.findByRoomIdOrderBySendDateDesc(roomId);
     }
 }

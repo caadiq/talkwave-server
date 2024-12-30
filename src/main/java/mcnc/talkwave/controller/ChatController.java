@@ -6,7 +6,6 @@ import mcnc.talkwave.dto.ChatResponseDTO;
 import mcnc.talkwave.entity.Chat;
 import mcnc.talkwave.entity.ChatRoom;
 import mcnc.talkwave.service.ChatService;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -40,8 +39,8 @@ public class ChatController {
 
     // 특정 채팅방의 채팅 내역 조회
     @GetMapping("/rooms/{roomId}/messages")
-    public ResponseEntity<Page<Chat>> getChatMessages(@PathVariable Long roomId, @RequestParam int page) {
-        Page<Chat> chats = chatService.getChatMessages(roomId, page);
+    public ResponseEntity<List<Chat>> getChatMessages(@PathVariable Long roomId) {
+        List<Chat> chats = chatService.getChatMessages(roomId);
         return ResponseEntity.ok(chats);
     }
 

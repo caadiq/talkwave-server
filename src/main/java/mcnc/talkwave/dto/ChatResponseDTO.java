@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 public class ChatResponseDTO {
-    private Long chatId;
     private Long roomId;      // 채팅방 ID
     private String userId;    // 보낸 유저 ID
     private String userName;
@@ -21,7 +20,6 @@ public class ChatResponseDTO {
 
     public static ChatResponseDTO of(Chat chat, Long roomId, User user) {
         return ChatResponseDTO.builder()
-                .chatId(chat.getId())
                 .roomId(roomId)
                 .userId(user.getUserId())
                 .userName(user.getName())
