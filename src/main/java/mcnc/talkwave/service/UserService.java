@@ -30,8 +30,9 @@ public class UserService {
     }
 
     public boolean loginUser(String userId, String password) {
-        User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new NoSuchElementException("Login: No User Found"));
-        return user.getPassword().equals(password);
+        return userRepository.findByUserId(userId)
+                .map(user -> user.getPassword().equals(password)) // 비밀번호 비교
+                .orElse(false); // 유저가 없으면 false
     }
+
 }

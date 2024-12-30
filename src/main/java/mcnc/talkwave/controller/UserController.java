@@ -24,11 +24,9 @@ public class UserController {
     @GetMapping("/login")
     public ResponseEntity<Object> loginUser(@RequestParam("userId") String userId,
                                             @RequestParam("password") String password) {
-        try {
-            if (userService.loginUser(userId, password)) {
-                return ResponseEntity.ok(userId);
-            }
-        } catch (NoSuchElementException e) {
+        if (userService.loginUser(userId, password)) {
+            return ResponseEntity.ok(userId);
+        } else {
             return ResponseEntity.badRequest().body("아이디/비밀번호가 일치하지 않습니다.");
         }
     }
