@@ -8,9 +8,9 @@ services:
     entrypoint: ["java", "-jar", "talkwave.jar"]
     environment:
       TZ: Asia/Seoul
-      DB_URL: ${SPRING_DATASOURCE_URL}
-      DB_USERNAME: ${SPRING_DATASOURCE_USERNAME}
-      DB_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
     networks:
       - app
     restart: always
