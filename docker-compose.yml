@@ -8,9 +8,6 @@ services:
     entrypoint: ["java", "-jar", "talkwave.jar"]
     environment:
       TZ: Asia/Seoul
-      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
-      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
-      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
     networks:
       - app
     restart: always
