@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @RestController
@@ -24,8 +25,8 @@ public class DepartureController {
     }
 
     @PostMapping
-    public ResponseEntity<Long> createDeparture(@RequestBody String name) {
-        Long deptId = departureService.createDeparture(name);
+    public ResponseEntity<Long> createDeparture(@RequestBody Map<String, String> request) {
+        Long deptId = departureService.createDeparture(request.get("name"));
         if (deptId == null) {
             return ResponseEntity.badRequest().body(null);
         }
