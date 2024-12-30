@@ -4,13 +4,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/caadiq/talkwave-server'
-            }
-        }
-
-         stage('Copy .env') {
-            steps {
-                sh 'cp /var/jenkins_home/server/env/.env.talkwave /var/jenkins_home/workspace/talkwave/.env'
+                git branch: 'develop', url: 'https://github.com/GeonHeeLeee/Talkwave_Backend'
             }
         }
 
@@ -35,6 +29,12 @@ pipeline {
         stage('Copy JAR') {
             steps {
                 sh 'docker cp /var/jenkins_home/workspace/talkwave/build/libs/talkwave-0.0.1-SNAPSHOT.jar talkwave-springboot:/app/talkwave.jar'
+            }
+        }
+
+        stage('Copy env') {
+            steps {
+                sh 'docker cp /var/jenkins_home/server/env/.env.talkwave talkwave-springboot:/app/.env'
             }
         }
 
