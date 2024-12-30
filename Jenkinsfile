@@ -34,6 +34,7 @@ pipeline {
 
         stage('Copy env') {
             steps {
+                sh 'cp /var/jenkins_home/server/env/.env.talkwave /var/jenkins_home/workspace/talkwave/.env'
                 sh 'docker cp /var/jenkins_home/server/env/.env.talkwave talkwave-springboot:/app/.env'
             }
         }
