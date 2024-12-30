@@ -19,4 +19,7 @@ public class Departure {
 
     private String name;
 
+    public Departure(String name) {
+        this.name = name;
+    }
 }

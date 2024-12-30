@@ -28,4 +28,10 @@ public class UserService {
         User user = User.createUser(registerDTO.getUserId(), registerDTO.getPassword(), registerDTO.getName(), departure);
         userRepository.save(user);
     }
+
+    public boolean loginUser(String userId, String password) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new NoSuchElementException("Login: No User Found"));
+        return user.getPassword().equals(password);
+    }
 }

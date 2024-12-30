@@ -37,4 +37,14 @@ public class DepartureService {
                 })
                 .toList();  // 최종 결과 리스트 반환
     }
+
+    @Transactional
+    public Long createDeparture(String name) {
+        if (!departureRepository.existsByName(name)) {
+            Departure departure = new Departure(name);
+            departureRepository.save(departure);
+            return departure.getDeptId();
+        }
+        return null;
+    }
 }
