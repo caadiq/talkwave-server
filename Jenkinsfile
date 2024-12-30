@@ -21,16 +21,16 @@ pipeline {
             }
         }
 
-        // stage('Deploy Container') {
-        //     steps {
-        //         script {
-        //             dir('/var/jenkins_home/workspace/talkwave') {
-        //                 sh 'docker-compose down'
-        //                 sh 'docker-compose up -d'
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Deploy Container') {
+            steps {
+                script {
+                    dir('/var/jenkins_home/workspace/talkwave') {
+                        sh 'docker-compose down'
+                        sh 'docker-compose up -d'
+                    }
+                }
+            }
+        }
 
         stage('Copy JAR') {
             steps {
