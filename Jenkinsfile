@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'develop', url: 'https://github.com/caadiq/talkwave-server'
+                git branch: 'main', url: 'https://github.com/caadiq/talkwave-server'
             }
         }
 
