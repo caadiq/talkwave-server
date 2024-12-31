@@ -1,16 +1,15 @@
 package mcnc.talkwave.service;
 
 import lombok.RequiredArgsConstructor;
+import mcnc.talkwave.dto.ChatDTO;
+import mcnc.talkwave.dto.ChatMessageDTO;
 import mcnc.talkwave.dto.ChatResponseDTO;
+import mcnc.talkwave.dto.ChatRoomDTO;
 import mcnc.talkwave.entity.Chat;
 import mcnc.talkwave.entity.ChatRoom;
 import mcnc.talkwave.entity.User;
 import mcnc.talkwave.repository.ChatRepository;
 import mcnc.talkwave.repository.ChatRoomRepository;
-import mcnc.talkwave.repository.UserRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,13 +31,13 @@ public class ChatService {
     }
 
     // 채팅방 조회
-    public List<ChatRoom> findAllChatRooms() {
-        return chatRoomRepository.findAll();
+    public List<ChatRoomDTO> findAllChatRooms() {
+        return chatRoomRepository.findLatestChatForRooms();
     }
 
     // 채팅 메시지 저장
     @Transactional
-    public ChatResponseDTO saveChatMessage(ChatResponseDTO chatMessageDTO) {
+    public ChatResponseDTO saveChatMessage(ChatMessageDTO chatMessageDTO) {
         ChatRoom room = roomCacheService.getRoomDetails(chatMessageDTO.getRoomId());
         User sender = userCacheService.getUserDetails(chatMessageDTO.getUserId());
         Chat chat = Chat.createChat(room, sender, chatMessageDTO.getMessage());
@@ -47,7 +46,9 @@ public class ChatService {
     }
 
     // 특정 채팅방의 채팅 내역 조회
-    public List<Chat> getChatMessages(Long roomId) {
-        return chatRepository.findByRoomIdOrderBySendDateDesc(roomId);
+    public List<ChatDTO> getChatMessages(Long roomId) {
+        return chatRepository.findByRoomIdOrderBySendDate(roomId)
+                .stream().map(ChatDTO::new)
+                .toList();
     }
 }
