@@ -4,6 +4,8 @@ import lombok.*;
 import mcnc.talkwave.entity.Chat;
 import mcnc.talkwave.entity.ChatRoom;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -12,11 +14,13 @@ import mcnc.talkwave.entity.ChatRoom;
 public class ChatRoomDTO {
     private Long roomId;
     private String roomName;
-    private ChatDTO latestChat;
+    private String latestMessage;
+    private LocalDateTime sendDate;
 
     public ChatRoomDTO(ChatRoom chatRoom, Chat chat) {
         this.roomId = chatRoom.getId();
         this.roomName = chatRoom.getName();
-        this.latestChat = new ChatDTO(chat);
+        this.latestMessage = chat.getMessage();
+        this.sendDate = chat.getSendDate();
     }
 }
