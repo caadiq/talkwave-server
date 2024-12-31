@@ -37,8 +37,8 @@ public class ChatController {
 
     // 채팅방 목록 조회
     @GetMapping("/rooms")
-    public ResponseEntity<List<ChatRoomDTO>> getChatRooms() {
-        List<ChatRoomDTO> chatRooms = chatService.findAllChatRooms();
+    public ResponseEntity<List<ChatRoomDTO>> getChatRooms(@RequestParam String userId) {
+        List<ChatRoomDTO> chatRooms = chatService.findAllChatRooms(userId);
         return ResponseEntity.ok(chatRooms);
     }
 
