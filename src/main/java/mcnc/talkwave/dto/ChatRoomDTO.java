@@ -12,11 +12,11 @@ import mcnc.talkwave.entity.ChatRoom;
 public class ChatRoomDTO {
     private Long roomId;
     private String roomName;
-    private ChatDTO chatDTO;
+    private ChatDTO latestChat;
 
     public ChatRoomDTO(ChatRoom chatRoom, Chat chat) {
         this.roomId = chatRoom.getId();
         this.roomName = chatRoom.getName();
-        this.chatDTO = new ChatDTO(chat);
+        this.latestChat = new ChatDTO(chat);
     }
 }
