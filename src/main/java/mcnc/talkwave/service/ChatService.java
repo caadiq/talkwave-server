@@ -34,8 +34,8 @@ public class ChatService {
     }
 
     // 채팅방 조회
-    public List<ChatRoomDTO> findAllChatRooms(String userId) {
-        return chatRoomRepository.findLatestChatForRooms(userId);
+    public List<ChatRoomDTO> findAllChatRooms() {
+        return chatRoomRepository.findLatestChatForRooms();
     }
 
     // 채팅 메시지 저장
