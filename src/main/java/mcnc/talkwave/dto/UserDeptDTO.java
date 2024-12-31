@@ -3,6 +3,7 @@ package mcnc.talkwave.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import mcnc.talkwave.entity.ChatRoomUser;
 import mcnc.talkwave.entity.Departure;
 
 import java.util.ArrayList;
@@ -27,6 +28,11 @@ public class UserDeptDTO {
     public static class UserInfoDTO {
         String userName;
         String userId;
+
+        public UserInfoDTO(ChatRoomUser chatRoomUser) {
+            this.userId = chatRoomUser.getUser().getUserId();
+            this.userName = chatRoomUser.getUser().getName();
+        }
     }
 }
 

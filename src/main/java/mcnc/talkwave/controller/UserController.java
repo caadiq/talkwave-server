@@ -6,11 +6,10 @@ import mcnc.talkwave.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.NoSuchElementException;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/user")
+@RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;

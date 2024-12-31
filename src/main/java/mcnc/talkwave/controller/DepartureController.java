@@ -13,7 +13,7 @@ import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/dept")
+@RequestMapping("/dept")
 public class DepartureController {
 
     private final DepartureService departureService;
