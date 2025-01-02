@@ -16,10 +16,14 @@ public class ChatRoomService {
     private final UserCacheService userCacheService;
 
     @Transactional
-    public void joinRoom(Long roomId, String userId) {
-        ChatRoom room = roomCacheService.getRoomDetails(roomId);
-        User user = userCacheService.getUserDetails(userId);
-        chatRoomUserRepository.save(new ChatRoomUser(room, user));
+    public boolean joinRoom(Long roomId, String userId) {
+        if (!chatRoomUserRepository.existsByChatRoom_IdAndUser_UserId(roomId, userId)) {
+            ChatRoom room = roomCacheService.getRoomDetails(roomId);
+            User user = userCacheService.getUserDetails(userId);
+            chatRoomUserRepository.save(new ChatRoomUser(room, user));
+            return true;
+        }
+        return false;
     }
 
     @Transactional

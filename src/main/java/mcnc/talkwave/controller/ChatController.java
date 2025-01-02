@@ -66,14 +66,16 @@ public class ChatController {
 
     @MessageMapping("/join")
     public void handleJoin(@Payload ChatEventDTO chatEventDTO) {
-        chatRoomService.joinRoom(chatEventDTO.getRoomId(), chatEventDTO.getUserId());
-        User enteredUser = userCacheService.getUserDetails(chatEventDTO.getUserId());
-        ChatDTO chatDTO = new ChatDTO(enteredUser, enteredUser.getName() + "님이 입장하셨습니다.");
+        boolean joinResult = chatRoomService.joinRoom(chatEventDTO.getRoomId(), chatEventDTO.getUserId());
+        if (joinResult) {
+            User enteredUser = userCacheService.getUserDetails(chatEventDTO.getUserId());
+            ChatDTO chatDTO = new ChatDTO(enteredUser, enteredUser.getName() + "님이 입장하셨습니다.");
 
-        messagingTemplate.convertAndSend(
-                "/room/" + chatEventDTO.getRoomId(),
-                chatDTO
-        );
+            messagingTemplate.convertAndSend(
+                    "/room/" + chatEventDTO.getRoomId(),
+                    chatDTO
+            );
+        }
     }
 
     @MessageMapping("/leave")
