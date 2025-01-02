@@ -30,8 +30,9 @@ public class ChatController {
 
     // 채팅방 생성
     @PostMapping("/rooms")
-    public ResponseEntity<ChatRoom> createChatRoom(@RequestParam String name) {
-        ChatRoom chatRoom = chatService.createChatRoom(name);
+    public ResponseEntity<ChatRoom> createChatRoom(@RequestParam String name,
+                                                   @RequestParam String userId) {
+        ChatRoom chatRoom = chatService.createChatRoom(name, userId);
         return ResponseEntity.ok(chatRoom);
     }
 
@@ -54,7 +55,7 @@ public class ChatController {
     public void sendMessage(@Payload ChatRequestDTO chatRequestDTO) {
         // 메시지 저장
         log.info("chat received: {}", chatRequestDTO.toString());
-        ChatDTO chatDTO = chatService.saveChatMessage(chatRequestDTO);
+        ChatDTO chatDTO = chatService.saveChatMessage(chatRequestDTO.getRoomId(), chatRequestDTO.getUserId(), chatRequestDTO.getMessage());
 
         // 구독한 클라이언트에게 메시지 전송
         messagingTemplate.convertAndSend(

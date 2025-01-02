@@ -28,9 +28,13 @@ public class ChatService {
     private final UserCacheService userCacheService;
 
     // 채팅방 생성
-    public ChatRoom createChatRoom(String name) {
+    @Transactional
+    public ChatRoom createChatRoom(String name, String userId) {
         ChatRoom chatRoom = ChatRoom.createRoom(name);
-        return chatRoomRepository.save(chatRoom);
+        chatRoomRepository.save(chatRoom);
+        User creator = userCacheService.getUserDetails(userId);
+        saveChatMessage(chatRoom.getId(), userId, creator.getName() + "님이 방을 생성하셨습니다.");
+        return chatRoom;
     }
 
     // 채팅방 조회
@@ -40,10 +44,10 @@ public class ChatService {
 
     // 채팅 메시지 저장
     @Transactional
-    public ChatDTO saveChatMessage(ChatRequestDTO chatRequestDTO) {
-        ChatRoom room = roomCacheService.getRoomDetails(chatRequestDTO.getRoomId());
-        User sender = userCacheService.getUserDetails(chatRequestDTO.getUserId());
-        Chat chat = Chat.createChat(room, sender, chatRequestDTO.getMessage());
+    public ChatDTO saveChatMessage(Long roomId, String userId, String message) {
+        ChatRoom room = roomCacheService.getRoomDetails(roomId);
+        User sender = userCacheService.getUserDetails(userId);
+        Chat chat = Chat.createChat(room, sender, message);
         chatRepository.save(chat);
         return ChatDTO.of(chat, sender);
     }
