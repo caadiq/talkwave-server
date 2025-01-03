@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class ChatRoomUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
