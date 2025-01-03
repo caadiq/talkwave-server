@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
-    @Query("select new mcnc.talkwave.dto.ChatRoomDTO(r, c) " +
+    @Query("select distinct new mcnc.talkwave.dto.ChatRoomDTO(r, c) " +
            "from ChatRoom r " +
            "join Chat c on r = c.room " +
            "join ChatRoomUser ch on r = ch.chatRoom " +
