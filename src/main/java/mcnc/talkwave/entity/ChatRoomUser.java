@@ -29,4 +29,7 @@ public class ChatRoomUser {
         this.user = user;
     }
 
+    protected ChatRoomUser() {
+
+    }
 }
