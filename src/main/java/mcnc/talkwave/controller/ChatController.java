@@ -14,7 +14,6 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -30,16 +29,15 @@ public class ChatController {
 
     // 채팅방 생성
     @PostMapping("/rooms")
-    public ResponseEntity<ChatRoom> createChatRoom(@RequestParam String name,
-                                                   @RequestParam String userId) {
-        ChatRoom chatRoom = chatService.createChatRoom(name, userId);
+    public ResponseEntity<ChatRoom> createChatRoom(@RequestBody CreateRoomDTO createRoomDTO) {
+        ChatRoom chatRoom = chatService.createChatRoom(createRoomDTO);
         return ResponseEntity.ok(chatRoom);
     }
 
     // 채팅방 목록 조회
     @GetMapping("/rooms")
-    public ResponseEntity<List<ChatRoomDTO>> getChatRooms() {
-        List<ChatRoomDTO> chatRooms = chatService.findAllChatRooms();
+    public ResponseEntity<List<ChatRoomDTO>> getChatRooms(@RequestParam String userId) {
+        List<ChatRoomDTO> chatRooms = chatService.findAllChatRooms(userId);
         return ResponseEntity.ok(chatRooms);
     }
 
@@ -48,6 +46,17 @@ public class ChatController {
     public ResponseEntity<ChatListDTO> getChatMessages(@PathVariable Long roomId) {
         ChatListDTO chats = chatService.getChatMessages(roomId);
         return ResponseEntity.ok(chats);
+    }
+
+    @PostMapping("/rooms/leave")
+    public void handleLeave(@RequestBody ChatEventDTO chatEventDTO) {
+        chatRoomService.leaveRoom(chatEventDTO.getRoomId(), chatEventDTO.getUserId());
+        User enteredUser = userCacheService.getUserDetails(chatEventDTO.getUserId());
+        ChatDTO chatDTO = new ChatDTO(enteredUser, enteredUser.getName() + "님이 퇴장하셨습니다.");
+        messagingTemplate.convertAndSend(
+                "/room/" + chatEventDTO.getRoomId(),
+                chatDTO
+        );
     }
 
     // 채팅 메시지 전송 (STOMP 사용)
@@ -63,29 +72,29 @@ public class ChatController {
                 chatDTO
         );
     }
-
-    @MessageMapping("/join")
-    public void handleJoin(@Payload ChatEventDTO chatEventDTO) {
-        boolean joinResult = chatRoomService.joinRoom(chatEventDTO.getRoomId(), chatEventDTO.getUserId());
-        if (joinResult) {
-            User enteredUser = userCacheService.getUserDetails(chatEventDTO.getUserId());
-            ChatDTO chatDTO = new ChatDTO(enteredUser, enteredUser.getName() + "님이 입장하셨습니다.");
-
-            messagingTemplate.convertAndSend(
-                    "/room/" + chatEventDTO.getRoomId(),
-                    chatDTO
-            );
-        }
-    }
-
-    @MessageMapping("/leave")
-    public void handleLeave(@Payload ChatEventDTO chatEventDTO) {
-        chatRoomService.leaveRoom(chatEventDTO.getRoomId(), chatEventDTO.getUserId());
-        User enteredUser = userCacheService.getUserDetails(chatEventDTO.getUserId());
-        ChatDTO chatDTO = new ChatDTO(enteredUser, enteredUser.getName() + "님이 퇴장하셨습니다.");
-        messagingTemplate.convertAndSend(
-                "/room/" + chatEventDTO.getRoomId(),
-                chatDTO
-        );
-    }
+//
+//    @MessageMapping("/join")
+//    public void handleJoin(@Payload ChatEventDTO chatEventDTO) {
+//        boolean joinResult = chatRoomService.joinRoom(chatEventDTO.getRoomId(), chatEventDTO.getUserId());
+//        if (joinResult) {
+//            User enteredUser = userCacheService.getUserDetails(chatEventDTO.getUserId());
+//            ChatDTO chatDTO = new ChatDTO(enteredUser, enteredUser.getName() + "님이 입장하셨습니다.");
+//
+//            messagingTemplate.convertAndSend(
+//                    "/room/" + chatEventDTO.getRoomId(),
+//                    chatDTO
+//            );
+//        }
+//    }
+//
+//    @MessageMapping("/leave")
+//    public void handleLeave(@Payload ChatEventDTO chatEventDTO) {
+//        chatRoomService.leaveRoom(chatEventDTO.getRoomId(), chatEventDTO.getUserId());
+//        User enteredUser = userCacheService.getUserDetails(chatEventDTO.getUserId());
+//        ChatDTO chatDTO = new ChatDTO(enteredUser, enteredUser.getName() + "님이 퇴장하셨습니다.");
+//        messagingTemplate.convertAndSend(
+//                "/room/" + chatEventDTO.getRoomId(),
+//                chatDTO
+//        );
+//    }
 }
