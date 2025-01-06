@@ -34,7 +34,7 @@ public class Chat {
     @Column(updatable = false)
     private LocalDateTime sendDate;
 
-    @OneToOne
+    @ManyToOne
     @Setter
     @JoinColumn(name = "emoji_id")
     private Emoji emoji;
