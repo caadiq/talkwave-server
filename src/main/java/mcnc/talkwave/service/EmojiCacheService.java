@@ -2,7 +2,7 @@ package mcnc.talkwave.service;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import lombok.RequiredArgsConstructor;
+import jakarta.annotation.PostConstruct;
 import mcnc.talkwave.entity.Emoji;
 import mcnc.talkwave.repository.EmojiRepository;
 import org.springframework.stereotype.Service;
@@ -20,9 +20,14 @@ public class EmojiCacheService {
 
         // Caffeine 캐시 설정 (10분 유지, 최대 1000개)
         this.emojiCache = Caffeine.newBuilder()
-                .expireAfterWrite(100, TimeUnit.MINUTES)
-                .maximumSize(100)
+                .maximumSize(1000)
                 .build();
+    }
+
+    @PostConstruct
+    public void initializeCache() {
+        emojiRepository.findAll().forEach(emoji -> emojiCache.put(emoji.getId(), emoji));
+        System.out.println("Emoji cache initialized with " + emojiCache.estimatedSize() + " items.");
     }
 
     /**
