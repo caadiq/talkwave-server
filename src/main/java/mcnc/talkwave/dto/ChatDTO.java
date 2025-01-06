@@ -2,9 +2,11 @@ package mcnc.talkwave.dto;
 
 import lombok.*;
 import mcnc.talkwave.entity.Chat;
+import mcnc.talkwave.entity.Emoji;
 import mcnc.talkwave.entity.User;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -23,7 +25,9 @@ public class ChatDTO {
         this.sendDate = chat.getSendDate();
         this.userId = chat.getSender().getUserId();
         this.userName = chat.getSender().getName();
-        this.emojiUrl = chat.getEmoji().getUrl();
+        this.emojiUrl = Optional.ofNullable(chat.getEmoji())
+                .map(Emoji::getUrl)
+                .orElse(null);
     }
 
     public ChatDTO(User user, String message) {
