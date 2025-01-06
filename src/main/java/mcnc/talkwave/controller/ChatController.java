@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mcnc.talkwave.dto.*;
 import mcnc.talkwave.entity.ChatRoom;
+import mcnc.talkwave.entity.Emoji;
 import mcnc.talkwave.entity.User;
 import mcnc.talkwave.service.ChatRoomService;
 import mcnc.talkwave.service.ChatService;
+import mcnc.talkwave.service.EmojiService;
 import mcnc.talkwave.service.UserCacheService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -24,6 +26,7 @@ public class ChatController {
 
     private final ChatService chatService;
     private final ChatRoomService chatRoomService;
+    private final EmojiService emojiService;
     private final UserCacheService userCacheService;
     private final SimpMessagingTemplate messagingTemplate; // STOMP 메시지 전송 도구
 
@@ -46,6 +49,11 @@ public class ChatController {
     public ResponseEntity<ChatListDTO> getChatMessages(@PathVariable Long roomId) {
         ChatListDTO chats = chatService.getChatMessages(roomId);
         return ResponseEntity.ok(chats);
+    }
+
+    @GetMapping("/emoji")
+    public ResponseEntity<List<Emoji>> getAllEmojis() {
+        return ResponseEntity.ok(emojiService.getAllEmojis());
     }
 
     @PostMapping("/rooms/leave")
