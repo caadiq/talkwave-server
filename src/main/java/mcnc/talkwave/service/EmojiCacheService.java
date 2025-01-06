@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import java.util.concurrent.TimeUnit;
 
 @Service
-@RequiredArgsConstructor
 public class EmojiCacheService {
 
     private final Cache<Long, Emoji> emojiCache;
