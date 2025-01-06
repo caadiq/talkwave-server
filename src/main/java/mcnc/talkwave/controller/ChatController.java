@@ -6,10 +6,7 @@ import mcnc.talkwave.dto.*;
 import mcnc.talkwave.entity.ChatRoom;
 import mcnc.talkwave.entity.Emoji;
 import mcnc.talkwave.entity.User;
-import mcnc.talkwave.service.ChatRoomService;
-import mcnc.talkwave.service.ChatService;
-import mcnc.talkwave.service.EmojiService;
-import mcnc.talkwave.service.UserCacheService;
+import mcnc.talkwave.service.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -27,6 +24,7 @@ public class ChatController {
     private final ChatService chatService;
     private final ChatRoomService chatRoomService;
     private final EmojiService emojiService;
+    private final EmojiCacheService emojiCacheService;
     private final UserCacheService userCacheService;
     private final SimpMessagingTemplate messagingTemplate; // STOMP 메시지 전송 도구
 
@@ -73,7 +71,9 @@ public class ChatController {
         // 메시지 저장
         log.info("chat received: {}", chatRequestDTO.toString());
         ChatDTO chatDTO = chatService.saveUserSentMessage(chatRequestDTO);
-
+        if (chatRequestDTO.getEmojiId() != null) {
+            chatDTO.setEmojiUrl(emojiCacheService.getEmojiDetails(chatRequestDTO.getEmojiId()).getUrl());
+        }
         // 구독한 클라이언트에게 메시지 전송
         messagingTemplate.convertAndSend(
                 "/room/" + chatRequestDTO.getRoomId(),
