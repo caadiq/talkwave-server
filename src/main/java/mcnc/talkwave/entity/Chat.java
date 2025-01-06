@@ -2,10 +2,7 @@ package mcnc.talkwave.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
@@ -37,6 +34,11 @@ public class Chat {
     @Column(updatable = false)
     private LocalDateTime sendDate;
 
+    @OneToOne
+    @Setter
+    @JoinColumn(name = "emoji_id")
+    private Emoji emoji;
+
     @Builder
     public Chat(ChatRoom room, User sender, String message) {
         this.room = room;
@@ -44,7 +46,6 @@ public class Chat {
         this.message = message;
         this.sendDate = LocalDateTime.now();
     }
-
     /**
      * 채팅 생성
      *

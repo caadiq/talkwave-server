@@ -72,7 +72,7 @@ public class ChatController {
     public void sendMessage(@Payload ChatRequestDTO chatRequestDTO) {
         // 메시지 저장
         log.info("chat received: {}", chatRequestDTO.toString());
-        ChatDTO chatDTO = chatService.saveChatMessage(chatRequestDTO.getRoomId(), chatRequestDTO.getUserId(), chatRequestDTO.getMessage());
+        ChatDTO chatDTO = chatService.saveUserSentMessage(chatRequestDTO);
 
         // 구독한 클라이언트에게 메시지 전송
         messagingTemplate.convertAndSend(

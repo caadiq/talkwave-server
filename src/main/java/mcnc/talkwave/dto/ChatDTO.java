@@ -16,12 +16,14 @@ public class ChatDTO {
     private LocalDateTime sendDate;
     private String userId;
     private String userName;
+    private String emojiUrl;
 
     public ChatDTO(Chat chat) {
         this.message = chat.getMessage();
         this.sendDate = chat.getSendDate();
         this.userId = chat.getSender().getUserId();
         this.userName = chat.getSender().getName();
+        this.emojiUrl = chat.getEmoji().getUrl();
     }
 
     public ChatDTO(User user, String message) {
@@ -32,10 +34,10 @@ public class ChatDTO {
     }
 
 
-    public static ChatDTO of(Chat chat, User user) {
+    public static ChatDTO of(Chat chat) {
         return ChatDTO.builder()
-                .userId(user.getUserId())
-                .userName(user.getName())
+                .userId(chat.getSender().getUserId())
+                .userName(chat.getSender().getName())
                 .message(chat.getMessage())
                 .sendDate(chat.getSendDate())
                 .build();

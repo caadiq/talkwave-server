@@ -2,10 +2,7 @@ package mcnc.talkwave.service;
 
 import lombok.RequiredArgsConstructor;
 import mcnc.talkwave.dto.*;
-import mcnc.talkwave.entity.Chat;
-import mcnc.talkwave.entity.ChatRoom;
-import mcnc.talkwave.entity.ChatRoomUser;
-import mcnc.talkwave.entity.User;
+import mcnc.talkwave.entity.*;
 import mcnc.talkwave.repository.ChatRepository;
 import mcnc.talkwave.repository.ChatRoomRepository;
 import mcnc.talkwave.repository.ChatRoomUserRepository;
@@ -26,6 +23,7 @@ public class ChatService {
     private final ChatRoomUserRepository chatRoomUserRepository;
     private final RoomCacheService roomCacheService;
     private final UserCacheService userCacheService;
+    private final EmojiCacheService emojiCacheService;
 
     // 채팅방 생성
     @Transactional
@@ -51,12 +49,21 @@ public class ChatService {
 
     // 채팅 메시지 저장
     @Transactional
-    public ChatDTO saveChatMessage(Long roomId, String userId, String message) {
+    public Chat saveChatMessage(Long roomId, String userId, String message) {
         ChatRoom room = roomCacheService.getRoomDetails(roomId);
         User sender = userCacheService.getUserDetails(userId);
         Chat chat = Chat.createChat(room, sender, message);
+        return chatRepository.save(chat);
+    }
+
+    @Transactional
+    public ChatDTO saveUserSentMessage(ChatRequestDTO chatRequestDTO) {
+        Chat chat = saveChatMessage(chatRequestDTO.getRoomId(), chatRequestDTO.getUserId(), chatRequestDTO.getMessage());
+        if (chatRequestDTO.getEmojiId() != null) {
+            chat.setEmoji(emojiCacheService.getEmojiDetails(chatRequestDTO.getEmojiId()));
+        }
         chatRepository.save(chat);
-        return ChatDTO.of(chat, sender);
+        return ChatDTO.of(chat);
     }
 
     // 특정 채팅방의 채팅 내역 조회
