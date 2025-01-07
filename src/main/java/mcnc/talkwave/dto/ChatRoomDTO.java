@@ -20,7 +20,7 @@ public class ChatRoomDTO {
     public ChatRoomDTO(ChatRoom chatRoom, Chat chat) {
         this.roomId = chatRoom.getId();
         this.roomName = chatRoom.getName();
-        this.latestMessage = chat.getMessage();
+        this.latestMessage = chat.getEmoji() != null ? "(이모티콘) " + chat.getMessage() : chat.getMessage();
         this.sendDate = chat.getSendDate();
     }
 }
